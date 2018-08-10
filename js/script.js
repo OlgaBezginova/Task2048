@@ -29,7 +29,11 @@ function newNumber(){
     let emptyCells = document.querySelectorAll('.empty');
     let randCell = emptyCells[randomNumber(0, emptyCells.length-1)];
     randCell.textContent = randomNumber(1,2)*2;
-    randCell.classList.remove('empty');
+    if(randCell.textContent === '2'){
+       randCell.className = 'num2';
+    }else{
+        randCell.className = 'num4';
+    }
     return randCell;
 }
 
@@ -51,5 +55,5 @@ function initTable(){
     } 
 }
 
-
+initTable();
 
