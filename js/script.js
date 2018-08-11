@@ -38,6 +38,8 @@ description.innerHTML = 'Join the numbers and get to the <b>2048 tile!</b>';
 const button = document.createElement('div');
 button.classList.add('button');
 button.textContent = 'New Game';
+button.addEventListener('click', startNewGame);
+
 
 //------------------------------------
 intro.appendChild(description);
@@ -48,6 +50,8 @@ table.appendChild(tbody);
 wrapper.appendChild(table);
 document.body.appendChild(wrapper);
 wrapper.style.width = getComputedStyle(table).width;
+
+startNewGame();
 
 //Create number 2 or 4 in a random cell
 function newNumber(){    
@@ -80,5 +84,9 @@ function initTable(){
     } 
 }
 
-initTable();
+function startNewGame(){
+    initTable();
+}
+
+
 
