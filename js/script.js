@@ -40,7 +40,6 @@ button.classList.add('button');
 button.textContent = 'New Game';
 button.addEventListener('click', startNewGame);
 
-
 //------------------------------------
 intro.appendChild(description);
 intro.appendChild(button);
@@ -67,13 +66,16 @@ function newNumber(){
 }
 
 //Initialize table for new game
-function initTable(){
+function clearTable(){
     for (var i = 0; i < tableSize; i++) {
-        for (var j = 0; j < tableSize; j++) {
+        for (let j = 0; j < tableSize; j++) {
             table.rows[i].cells[j].className = 'empty';
             table.rows[i].cells[j].textContent = '';            
         }
     }
+}
+
+function initTable(){
     let twoUniqueCells = false;
     while(!twoUniqueCells){ 
         const initNumber0 = newNumber();
@@ -85,8 +87,6 @@ function initTable(){
 }
 
 function startNewGame(){
-    initTable();
+    clearTable();
+    let timeout = setTimeout(initTable, 500);
 }
-
-
-
