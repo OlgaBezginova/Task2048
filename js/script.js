@@ -88,5 +88,70 @@ function initTable(){
 
 function startNewGame(){
     clearTable();
-    let timeout = setTimeout(initTable, 500);
+    //const timeout = setTimeout(initTable, 500);
+    initTable(); //for debugging
+}
+
+function clearCell(td){
+    td.className = 'empty';
+    td.textContent = '';
+}
+
+//Shift all numbers to one of the table edges 
+function shiftToEnd(set){
+    let emptyCount = 0;
+    for (let j = set.length - 1; j >= 0; j--) {
+        if(set[j].className !== 'empty'){
+            if (j === set.length - 1) continue;
+            set[j + emptyCount].className = set[j].className; 
+            set[j + emptyCount].textContent = set[j].textContent; 
+            clearCell(set[j]);
+        }
+        else {
+            emptyCount++;
+        }
+    }
+}
+
+function shiftToStart(set){
+    let emptyCount = 0;
+    for (let j = 0; j < set.length; j++) {
+        if(set[j].className !== 'empty'){
+            if (!j) continue;
+            set[j - emptyCount].className = set[j].className; 
+            set[j - emptyCount].textContent = set[j].textContent; 
+            clearCell(set[j]);
+        }
+        else {
+            emptyCount++;
+        }
+    }
+}
+
+function shiftDown(){    
+    for (let i = 0; i < tableSize; i++) {       
+        const column = document.querySelectorAll(`td[data-col="${i}"]`); 
+        shiftToEnd(column);
+    }    
+}
+
+function shiftUp(){
+    for (let i = 0; i < tableSize; i++) {
+        const column = document.querySelectorAll(`td[data-col="${i}"]`); 
+        shiftToStart(column);
+    }    
+}
+
+function shiftLeft(){
+    for (let i = 0; i < tableSize; i++) {
+        const row = document.querySelectorAll(`td[data-row="${i}"]`); 
+        shiftToStart(row);
+    }    
+}
+
+function shiftRight(){
+    for (let i = 0; i < tableSize; i++) {
+        const row = document.querySelectorAll(`td[data-row="${i}"]`); 
+        shiftToEnd(row);
+    }    
 }
