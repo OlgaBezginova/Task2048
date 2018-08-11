@@ -35,21 +35,19 @@ const description = document.createElement('div');
 description.classList.add('description');
 description.innerHTML = 'Join the numbers and get to the <b>2048 tile!</b>';
 
+const button = document.createElement('div');
+button.classList.add('button');
+button.textContent = 'New Game';
+
+//------------------------------------
 intro.appendChild(description);
-
-
-
-
-
-
+intro.appendChild(button);
 wrapper.appendChild(title);
 wrapper.appendChild(intro);
 table.appendChild(tbody);
 wrapper.appendChild(table);
-
 document.body.appendChild(wrapper);
 wrapper.style.width = getComputedStyle(table).width;
-
 
 //Create number 2 or 4 in a random cell
 function newNumber(){    
