@@ -4,33 +4,60 @@ function randomNumber(min, max) {
 
 const tableSize = 4;
 
-let table = document.createElement('table');
-let tbody = document.createElement('tbody');
-let tr = document.createElement('tr');
-let td = document.createElement('td');
+const wrapper =  document.createElement('div');
+wrapper.classList.add('wrapper');
+
+//Create table
+const table = document.createElement('table');
+const tbody = document.createElement('tbody');
+const tr = document.createElement('tr');
+const td = document.createElement('td');
 
 for(let i = 0; i < tableSize; i++){
   let newTr = tr.cloneNode(true);
   for(let j = 0; j < tableSize; j++){
-    let newTd = td.cloneNode(false);
+    const newTd = td.cloneNode(false);
     newTd.dataset.row = i + '';
     newTd.dataset.col = j + '';
     newTr.appendChild(newTd);
   }
-
   tbody.appendChild(newTr);
 }
 
+//Create heading elements
+const title = document.createElement('h1');
+title.textContent = '2048';
+
+const intro = document.createElement('div');
+intro.classList.add('intro');
+
+const description = document.createElement('div');
+description.classList.add('description');
+description.innerHTML = 'Join the numbers and get to the <b>2048 tile!</b>';
+
+intro.appendChild(description);
+
+
+
+
+
+
+wrapper.appendChild(title);
+wrapper.appendChild(intro);
 table.appendChild(tbody);
-document.body.appendChild(table);
+wrapper.appendChild(table);
+
+document.body.appendChild(wrapper);
+wrapper.style.width = getComputedStyle(table).width;
+
 
 //Create number 2 or 4 in a random cell
 function newNumber(){    
-    let emptyCells = document.querySelectorAll('.empty');
-    let randCell = emptyCells[randomNumber(0, emptyCells.length-1)];
+    const emptyCells = document.querySelectorAll('.empty');
+    const randCell = emptyCells[randomNumber(0, emptyCells.length-1)];
     randCell.textContent = randomNumber(1,2)*2;
     if(randCell.textContent === '2'){
-       randCell.className = 'num2';
+        randCell.className = 'num2';
     }else{
         randCell.className = 'num4';
     }
@@ -47,8 +74,8 @@ function initTable(){
     }
     let twoUniqueCells = false;
     while(!twoUniqueCells){ 
-        let initNumber0 = newNumber();
-        let initNumber1 = newNumber();
+        const initNumber0 = newNumber();
+        const initNumber1 = newNumber();
         if(initNumber0 !== initNumber1){
             twoUniqueCells = true;   
         }        
