@@ -95,7 +95,11 @@ function clearCell(td) {
 
 function setNumber(td, value) {
     td.textContent = value;
-    td.className = `num${td.textContent}`; 
+    if(value <= 2048) {
+        td.className = `num${td.textContent}`;
+    } else {
+        td.className = 'great';
+    }    
 }
 
 //Shift all numbers to one of the table edges 
@@ -154,7 +158,6 @@ function joinNumbersToStart(set) {
         }        
     }
 }
-
 
 function shiftDown() {    
     for(let i = 0; i < tableSize; i++) {   
