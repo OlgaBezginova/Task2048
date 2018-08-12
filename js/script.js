@@ -165,7 +165,7 @@ function shiftDown() {
         shiftToEnd(column);
         joinNumbersToEnd(column);
         shiftToEnd(column);
-    }    
+    } 
 }
 
 function shiftUp() {
@@ -174,7 +174,7 @@ function shiftUp() {
         shiftToStart(column);
         joinNumbersToStart(column);
         shiftToStart(column);
-    }    
+    }
 }
 
 function shiftLeft() {
@@ -183,7 +183,7 @@ function shiftLeft() {
         shiftToStart(row);
         joinNumbersToStart(row);
         shiftToStart(row);
-    }    
+    }
 }
 
 function shiftRight() {
@@ -192,11 +192,21 @@ function shiftRight() {
         shiftToEnd(row);
         joinNumbersToEnd(row);
         shiftToEnd(row);
-    }    
+    } 
 }
 
-document.body.addEventListener('keydown', function(event) {    
-     switch(event.keyCode) {         
+function tableChecksum(table) {
+    const tdList = table.querySelectorAll('td');
+    let checksum = 0;
+    for(let i = 0; i < tdList.length; i++) {
+        checksum += (i + 1) * tdList[i].textContent;
+    }
+    return checksum;
+}
+
+document.body.addEventListener('keydown', function(event) {  
+    const chechsum = tableChecksum(table);
+    switch(event.keyCode) {         
         case 37:  //Left
              shiftLeft();
              break;
@@ -210,7 +220,8 @@ document.body.addEventListener('keydown', function(event) {
              shiftDown();
              break;
     }
-    if(event.keyCode >= 37 && event.keyCode <= 40) {
+    const tableChanged = (chechsum !== tableChecksum(table));
+    if(event.keyCode >= 37 && event.keyCode <= 40 && tableChanged) {
         const timeout = setTimeout(newNumber, 100); 
     }
 });
