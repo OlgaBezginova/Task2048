@@ -103,15 +103,15 @@ function shiftToEnd(set) {
     let emptyCount = 0;
     for(let j = set.length - 1; j >= 0; j--) {
         if(set[j].className !== 'empty') {
-            if(j === set.length - 1 || set[j + 1].className !== 'empty') {
+            if(j === set.length - 1 || set[j + 1].className !== 'empty') { 
                 continue;                
-            }     
+            }
             setNumber(set[j + emptyCount], set[j].textContent);
-            clearCell(set[j]);            
+            clearCell(set[j]); 
         } else {
             emptyCount++;
         }        
-    }   
+    }
 }
 
 function shiftToStart(set) {
@@ -130,17 +130,46 @@ function shiftToStart(set) {
     }
 }
 
+//Multiply same numbers
+function joinNumbersToEnd(set) {
+    for(let j = set.length - 2; j >= 0; j--) {
+        if(set[j].className === 'empty') {
+            break;
+        }
+        if(set[j].textContent === set[j + 1].textContent) {
+            setNumber(set[j + 1], set[j].textContent*2);
+            clearCell(set[j]);
+        }        
+    }
+}
+
+function joinNumbersToStart(set) {
+    for(let j = 1; j < set.length; j++) {
+        if(set[j].className === 'empty') {
+            break;
+        }
+        if(set[j].textContent === set[j - 1].textContent) {
+            setNumber(set[j - 1], set[j].textContent*2);
+            clearCell(set[j]);
+        }        
+    }
+}
+
+
 function shiftDown() {    
     for(let i = 0; i < tableSize; i++) {   
         const column = document.querySelectorAll(`td[data-col="${i}"]`); 
         shiftToEnd(column);
-        joinNumbers(column);
+        joinNumbersToEnd(column);
+        shiftToEnd(column);
     }    
 }
 
 function shiftUp() {
     for(let i = 0; i < tableSize; i++) {
         const column = document.querySelectorAll(`td[data-col="${i}"]`); 
+        shiftToStart(column);
+        joinNumbersToStart(column);
         shiftToStart(column);
     }    
 }
@@ -149,6 +178,8 @@ function shiftLeft() {
     for(let i = 0; i < tableSize; i++) {
         const row = document.querySelectorAll(`td[data-row="${i}"]`); 
         shiftToStart(row);
+        joinNumbersToStart(row);
+        shiftToStart(row);
     }    
 }
 
@@ -156,5 +187,27 @@ function shiftRight() {
     for(let i = 0; i < tableSize; i++) {
         const row = document.querySelectorAll(`td[data-row="${i}"]`); 
         shiftToEnd(row);
+        joinNumbersToEnd(row);
+        shiftToEnd(row);
     }    
 }
+
+document.body.addEventListener('keydown', function(event) {    
+     switch(event.keyCode) {         
+        case 37:  //Left
+             shiftLeft();
+             break;
+        case 38:   //Up
+             shiftUp();
+             break;
+        case 39:   //Right
+             shiftRight();
+             break;
+        case 40:   //Down
+             shiftDown();
+             break;
+    }
+    if(event.keyCode >= 37 && event.keyCode <= 40) {
+        const timeout = setTimeout(newNumber, 100); 
+    }
+});
