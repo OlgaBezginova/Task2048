@@ -102,7 +102,9 @@ function shiftToEnd(set){
     let emptyCount = 0;
     for (let j = set.length - 1; j >= 0; j--) {
         if(set[j].className !== 'empty'){
-            if (j === set.length - 1) continue;
+            if (j === set.length - 1 || set[j + 1].className !== 'empty') {
+                continue;
+            }
             set[j + emptyCount].className = set[j].className; 
             set[j + emptyCount].textContent = set[j].textContent; 
             clearCell(set[j]);
@@ -117,7 +119,9 @@ function shiftToStart(set){
     let emptyCount = 0;
     for (let j = 0; j < set.length; j++) {
         if(set[j].className !== 'empty'){
-            if (!j) continue;
+            if (!j || set[j - 1].className !== 'empty') {
+                continue;
+            }
             set[j - emptyCount].className = set[j].className; 
             set[j - emptyCount].textContent = set[j].textContent; 
             clearCell(set[j]);
