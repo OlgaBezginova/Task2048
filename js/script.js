@@ -118,6 +118,7 @@ function shiftNumber(set) {
             } else { 
                 setNumber(nextNumber, set[j].textContent*2); //Join numbers
                 clearCell(set[j]);
+                emptyCount++;
             }         
         } else {
             emptyCount++;
@@ -130,7 +131,7 @@ function shiftNumber(set) {
                 return set[i];
             }
         }
-    }
+    }   
 }
 
 function shiftDown() {    
