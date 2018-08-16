@@ -6,6 +6,8 @@ const tableSize = 4;
 
 const wrapper =  document.createElement('div');
 wrapper.classList.add('wrapper');
+const gameContainer =  document.createElement('div');
+gameContainer.classList.add('game-container');
 
 //Create table
 const table = document.createElement('table');
@@ -35,30 +37,50 @@ const description = document.createElement('div');
 description.classList.add('description');
 description.innerHTML = 'Join the numbers and get to the <b>2048 tile!</b>';
 
-const button = document.createElement('div');
-button.classList.add('button');
-button.textContent = 'New Game';
-button.addEventListener('click', startNewGame);
+const newGameBtn = document.createElement('div');
+newGameBtn.classList.add('button');
+newGameBtn.textContent = 'New Game';
+newGameBtn.addEventListener('click', startNewGame);
+
+//Create messages
+const gameOver = document.createElement('div');
+gameOver.classList.add('message', 'game-over');
+
+const gameOverMsg = document.createElement('h2');
+gameOverMsg.textContent = 'Game Over!';
+
+const tryAgainBtn = document.createElement('div');
+tryAgainBtn.classList.add('button');
+tryAgainBtn.textContent = 'Try Again';
 
 intro.appendChild(description);
-intro.appendChild(button);
+intro.appendChild(newGameBtn);
 wrapper.appendChild(title);
 wrapper.appendChild(intro);
 table.appendChild(tbody);
-wrapper.appendChild(table);
+gameContainer.appendChild(table);
+gameOver.appendChild(gameOverMsg);
+gameOver.appendChild(tryAgainBtn);
+gameContainer.appendChild(gameOver);
+wrapper.appendChild(gameContainer);
 document.body.appendChild(wrapper);
+
 wrapper.style.width = getComputedStyle(table).width;
+gameOver.style.width = getComputedStyle(table).width;
+gameOver.style.height = getComputedStyle(table).height;
 
 startNewGame();
 
 //Create number 2 or 4 in a random cell
-function newNumber(){    
+function newNumber(){  
     const emptyCells = document.querySelectorAll('.empty');
-    const randCell = emptyCells[randomNumber(0, emptyCells.length-1)];
-    randCell.textContent = randomNumber(1,2)*2;
-    randCell.className = `num${randCell.textContent}`; 
-    randCell.style.transform = 'scale(1.1)';
-    return randCell;
+    if(emptyCells.length){
+        const randCell = emptyCells[randomNumber(0, emptyCells.length-1)];
+        randCell.textContent = randomNumber(1,2)*2;
+        randCell.className = `num${randCell.textContent}`; 
+        randCell.style.transform = 'scale(1.1)';
+        return emptyCells;
+    } 
 }
 
 //Initialize table for new game
@@ -98,7 +120,7 @@ function setNumber(td, value) {
         td.className = `num${td.textContent}`;
     } else {
         td.className = 'great';
-    }    
+    }
 }
 
 function shiftNumber(set) {
@@ -180,6 +202,11 @@ table.addEventListener('transitionend', function(event) {
     }
 });
 
+tryAgainBtn.addEventListener('click', function() {
+    tryAgainBtn.parentElement.classList.toggle('visible');
+    startNewGame(); 
+});
+
 document.body.addEventListener('keydown', function(event) {  
     const chechsum = tableChecksum(table);
     switch(event.keyCode) {         
@@ -198,6 +225,6 @@ document.body.addEventListener('keydown', function(event) {
     }
     const tableChanged = (chechsum !== tableChecksum(table));
     if(event.keyCode >= 37 && event.keyCode <= 40 && tableChanged) {
-        setTimeout(newNumber, 200); 
+        setTimeout(newNumber, 200);
     }
 });

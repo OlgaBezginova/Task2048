@@ -11,9 +11,32 @@ body {
     color: #776e65;
 }
 
+.visible {
+    display: none !important;
+}
+
 .wrapper {
     margin: 0 auto; 
     margin-top: 80px;
+}
+
+.game-container {
+    position: relative;
+}
+
+.message {
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    display: none;
+}
+
+.game-over {   
+    background-color: #eee4daba;
 }
 
 .intro {
@@ -31,13 +54,13 @@ body {
     padding: 0 20px;
     color: #f9f6f2;
     height: 40px;
+    width: 100px;
     line-height: 42px;
     cursor: pointer;
     display: block;
     text-align: center;
     font-weight: bold;
 }
-
 
 table {
     background-color: #bbada0;
@@ -64,6 +87,14 @@ h1 {
     font-size: 80px;
     font-weight: bold;
     display: block;   
+}
+
+h2 {
+    font-size: 60px;
+    font-weight: bold;
+    height: 60px;
+    line-height: 60px;
+    margin-bottom: 30px;
 }
 
 .empty {
