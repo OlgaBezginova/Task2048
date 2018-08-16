@@ -106,13 +106,16 @@ h1 {
 }
 
 .num1024 {
+    font-size: 35px;
     background-color: #edcf72; 
 }
 
 .num2048 {
+    font-size: 35px;
     background-color: #edcf72; 
 }
 
 .great  {
+    font-size: 35px;
     background-color: #222222; 
 }
