@@ -40,7 +40,6 @@ button.classList.add('button');
 button.textContent = 'New Game';
 button.addEventListener('click', startNewGame);
 
-//------------------------------------
 intro.appendChild(description);
 intro.appendChild(button);
 wrapper.appendChild(title);
@@ -102,96 +101,65 @@ function setNumber(td, value) {
     }    
 }
 
-//Shift all numbers to one of the table edges 
-function shiftToEnd(set) {
+function shiftNumber(set) {
     let emptyCount = 0;
-    for(let j = set.length - 1; j >= 0; j--) {
+    for(var j = set.length - 1; j >= 0; j--) {
         if(set[j].className !== 'empty') {
-            if(j === set.length - 1 || set[j + 1].className !== 'empty') { 
+            if(j === set.length - 1) { //Number is in the last sell
                 continue;                
             }
-            setNumber(set[j + emptyCount], set[j].textContent);
-            clearCell(set[j]); 
+            let nextNumber = findNextNumber(set[j], j);
+            if(!nextNumber || nextNumber.className !== set[j].className) { //Number is the last in the set or next number is not the same
+                if(set[j + 1].className !== 'empty') { //Next cell is not empty
+                    continue;
+                }
+                setNumber(set[j + emptyCount], set[j].textContent); //Shift number to the last empty cell
+                clearCell(set[j]); 
+            } else { 
+                setNumber(nextNumber, set[j].textContent*2); //Join numbers
+                clearCell(set[j]);
+            }         
         } else {
             emptyCount++;
         }        
     }
-}
-
-function shiftToStart(set) {
-    let emptyCount = 0;
-    for(let j = 0; j < set.length; j++) {
-        if(set[j].className !== 'empty') {
-            if(!j || set[j - 1].className !== 'empty') {
-                continue;
-            }    
-            setNumber(set[j - emptyCount], set[j].textContent);
-            clearCell(set[j]);
+    
+    function findNextNumber(num, index) { //Finds next number in the set
+        for(let i = index; i < set.length; i++) {
+            if(set[i].className !== 'empty' && i !== index) {
+                return set[i];
+            }
         }
-        else {
-            emptyCount++;
-        }
-    }
-}
-
-//Multiply same numbers
-function joinNumbersToEnd(set) {
-    for(let j = set.length - 2; j >= 0; j--) {
-        if(set[j].className === 'empty') {
-            break;
-        }
-        if(set[j].textContent === set[j + 1].textContent) {
-            setNumber(set[j + 1], set[j].textContent*2);
-            clearCell(set[j]);
-        }        
-    }
-}
-
-function joinNumbersToStart(set) {
-    for(let j = 1; j < set.length; j++) {
-        if(set[j].className === 'empty') {
-            break;
-        }
-        if(set[j].textContent === set[j - 1].textContent) {
-            setNumber(set[j - 1], set[j].textContent*2);
-            clearCell(set[j]);
-        }        
     }
 }
 
 function shiftDown() {    
     for(let i = 0; i < tableSize; i++) {   
         const column = document.querySelectorAll(`td[data-col="${i}"]`); 
-        shiftToEnd(column);
-        joinNumbersToEnd(column);
-        shiftToEnd(column);
+        shiftNumber(column);
     } 
 }
 
 function shiftUp() {
     for(let i = 0; i < tableSize; i++) {
-        const column = document.querySelectorAll(`td[data-col="${i}"]`); 
-        shiftToStart(column);
-        joinNumbersToStart(column);
-        shiftToStart(column);
+        let column = document.querySelectorAll(`td[data-col="${i}"]`); 
+        column = Array.prototype.slice.call(column).reverse();
+        shiftNumber(column);
     }
 }
 
 function shiftLeft() {
     for(let i = 0; i < tableSize; i++) {
-        const row = document.querySelectorAll(`td[data-row="${i}"]`); 
-        shiftToStart(row);
-        joinNumbersToStart(row);
-        shiftToStart(row);
+        let row = document.querySelectorAll(`td[data-row="${i}"]`);
+        row = Array.prototype.slice.call(row).reverse();
+        shiftNumber(row);
     }
 }
 
 function shiftRight() {
     for(let i = 0; i < tableSize; i++) {
         const row = document.querySelectorAll(`td[data-row="${i}"]`); 
-        shiftToEnd(row);
-        joinNumbersToEnd(row);
-        shiftToEnd(row);
+        shiftNumber(row);
     } 
 }
 
