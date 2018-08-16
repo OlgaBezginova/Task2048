@@ -57,6 +57,7 @@ function newNumber(){
     const randCell = emptyCells[randomNumber(0, emptyCells.length-1)];
     randCell.textContent = randomNumber(1,2)*2;
     randCell.className = `num${randCell.textContent}`; 
+    randCell.style.transform = 'scale(1.1)';
     return randCell;
 }
 
@@ -83,8 +84,7 @@ function initTable() {
 
 function startNewGame() {
     clearTable();
-    const timeout = setTimeout(initTable, 300);
-
+    setTimeout(initTable, 300);
 }
 
 function clearCell(td) {
@@ -118,6 +118,7 @@ function shiftNumber(set) {
             } else { 
                 setNumber(nextNumber, set[j].textContent*2); //Join numbers
                 clearCell(set[j]);
+                nextNumber.style.transform = 'scale(1.1)';
                 emptyCount++;
             }         
         } else {
@@ -173,6 +174,12 @@ function tableChecksum(table) {
     return checksum;
 }
 
+table.addEventListener('transitionend', function(event) {
+    if(event.target.tagName === 'TD') {
+        event.target.style.transform = 'scale(1)';
+    }
+});
+
 document.body.addEventListener('keydown', function(event) {  
     const chechsum = tableChecksum(table);
     switch(event.keyCode) {         
@@ -191,6 +198,6 @@ document.body.addEventListener('keydown', function(event) {
     }
     const tableChanged = (chechsum !== tableChecksum(table));
     if(event.keyCode >= 37 && event.keyCode <= 40 && tableChanged) {
-        const timeout = setTimeout(newNumber, 100); 
+        setTimeout(newNumber, 200); 
     }
 });
