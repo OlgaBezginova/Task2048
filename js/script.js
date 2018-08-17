@@ -43,6 +43,8 @@ newGameBtn.textContent = 'New Game';
 newGameBtn.addEventListener('click', startNewGame);
 
 //Create messages
+
+//Game over
 const gameOver = document.createElement('div');
 gameOver.classList.add('message', 'game-over');
 
@@ -53,6 +55,17 @@ const tryAgainBtn = document.createElement('div');
 tryAgainBtn.classList.add('button');
 tryAgainBtn.textContent = 'Try Again';
 
+//You win
+let youWin = document.createElement('div');
+youWin.classList.add('message', 'you-win');
+
+const youWinMsg = document.createElement('h2');
+youWinMsg.textContent = 'Ай маладэц!';
+
+const keepGoingBtn = document.createElement('div');
+keepGoingBtn.classList.add('button');
+keepGoingBtn.textContent = 'Keep Going';
+
 intro.appendChild(description);
 intro.appendChild(newGameBtn);
 wrapper.appendChild(title);
@@ -61,6 +74,10 @@ table.appendChild(tbody);
 gameContainer.appendChild(table);
 gameOver.appendChild(gameOverMsg);
 gameOver.appendChild(tryAgainBtn);
+youWin.appendChild(youWinMsg);
+youWin.appendChild(tryAgainBtn);
+youWin.appendChild(keepGoingBtn);
+gameContainer.appendChild(youWin);
 gameContainer.appendChild(gameOver);
 wrapper.appendChild(gameContainer);
 document.body.appendChild(wrapper);
@@ -68,6 +85,8 @@ document.body.appendChild(wrapper);
 wrapper.style.width = getComputedStyle(table).width;
 gameOver.style.width = getComputedStyle(table).width;
 gameOver.style.height = getComputedStyle(table).height;
+youWin.style.width = getComputedStyle(table).width;
+youWin.style.height = getComputedStyle(table).height;
 
 startNewGame();
 
@@ -141,6 +160,7 @@ function shiftNumber(set) { //Main logic
                 setNumber(nextNumber, set[j].textContent * 2); //Join numbers
                 clearCell(set[j]);
                 nextNumber.style.transform = 'scale(1.1)';
+                checkWin(nextNumber);
                 emptyCount++;
             }         
         } else {
@@ -219,6 +239,15 @@ function checkGameOver() {
     gameOver.classList.toggle('visible'); 
 }
 
+function checkWin(num) {
+    if(num.textContent === '8') {
+        if(youWin) {
+            youWin.classList.toggle('visible');
+            youWin = null;
+        }
+    }
+}
+
 table.addEventListener('transitionend', function(event) {
     if(event.target.tagName === 'TD') {
         event.target.style.transform = 'scale(1)';
@@ -228,6 +257,10 @@ table.addEventListener('transitionend', function(event) {
 tryAgainBtn.addEventListener('click', function() {
     tryAgainBtn.parentElement.classList.toggle('visible');
     startNewGame(); 
+});
+
+keepGoingBtn.addEventListener('click', function() {
+    tryAgainBtn.parentElement.classList.toggle('visible');
 });
 
 document.body.addEventListener('keydown', function(event) {  

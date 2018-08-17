@@ -28,15 +28,19 @@ body {
     position: absolute;
     top: 0;
     left: 0;
-    display: flex;
+    display: none;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    display: none;
 }
 
 .game-over {   
-    background-color: #eee4daba;
+    background-color: #eee4daba;    
+}
+
+.you-win {
+    background-color: #edcf72ba;
+    color: white;
 }
 
 .intro {
@@ -54,18 +58,18 @@ body {
     padding: 0 20px;
     color: #f9f6f2;
     height: 40px;
-    width: 100px;
+    width: 120px;
     line-height: 42px;
     cursor: pointer;
     display: block;
     text-align: center;
-    font-weight: bold;
+    font-weight: bold; 
+    margin-bottom: 30px;
 }
 
 table {
     background-color: #bbada0;
     margin: 0 auto;
-    margin-top: 40px;
     border-spacing: 15px;
     border-radius: 5px;
 }
