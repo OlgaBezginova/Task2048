@@ -43,24 +43,14 @@ newGameBtn.textContent = 'New Game';
 newGameBtn.addEventListener('click', startNewGame);
 
 //Create messages
+const message = document.createElement('div');
+message.classList.add('message');
 
-//Game over
-const gameOver = document.createElement('div');
-gameOver.classList.add('message', 'game-over');
-
-const gameOverMsg = document.createElement('h2');
-gameOverMsg.textContent = 'Game Over!';
+const messageTitle = document.createElement('h2');
 
 const tryAgainBtn = document.createElement('div');
 tryAgainBtn.classList.add('button');
 tryAgainBtn.textContent = 'Try Again';
-
-//You win
-let youWin = document.createElement('div');
-youWin.classList.add('message', 'you-win');
-
-const youWinMsg = document.createElement('h2');
-youWinMsg.textContent = 'Ай маладэц!';
 
 const keepGoingBtn = document.createElement('div');
 keepGoingBtn.classList.add('button');
@@ -68,25 +58,20 @@ keepGoingBtn.textContent = 'Keep Going';
 
 intro.appendChild(description);
 intro.appendChild(newGameBtn);
+table.appendChild(tbody);
+message.appendChild(messageTitle);
+message.appendChild(tryAgainBtn);
+message.appendChild(keepGoingBtn);
+gameContainer.appendChild(table);
+gameContainer.appendChild(message);
 wrapper.appendChild(title);
 wrapper.appendChild(intro);
-table.appendChild(tbody);
-gameContainer.appendChild(table);
-gameOver.appendChild(gameOverMsg);
-gameOver.appendChild(tryAgainBtn);
-youWin.appendChild(youWinMsg);
-youWin.appendChild(tryAgainBtn);
-youWin.appendChild(keepGoingBtn);
-gameContainer.appendChild(youWin);
-gameContainer.appendChild(gameOver);
 wrapper.appendChild(gameContainer);
 document.body.appendChild(wrapper);
 
 wrapper.style.width = getComputedStyle(table).width;
-gameOver.style.width = getComputedStyle(table).width;
-gameOver.style.height = getComputedStyle(table).height;
-youWin.style.width = getComputedStyle(table).width;
-youWin.style.height = getComputedStyle(table).height;
+message.style.width = getComputedStyle(table).width;
+message.style.height = getComputedStyle(table).height;
 
 startNewGame();
 
@@ -98,8 +83,8 @@ function newNumber(){
         randCell.textContent = randomNumber(1,2) * 2;
         randCell.className = `num${randCell.textContent}`; 
         randCell.style.transform = 'scale(1.1)';
-        return emptyCells;
-    }
+        return randCell;
+    } 
 }
 
 //Initialize table for new game
@@ -143,25 +128,32 @@ function setNumber(td, value) {
 }
 
 function shiftNumber(set) { //Main logic
-    let emptyCount = 0;
+    let emptyCount = 0;   
+    clearJoined();
     for(var j = set.length - 1; j >= 0; j--) {
         if(set[j].className !== 'empty') {
             if(j === set.length - 1) { //Number is in the last sell
                 continue;                
             }
             let nextNumber = findNextNumber(set[j], j);
-            if(!nextNumber || nextNumber.className !== set[j].className) { //Number is the last in the set or next number is not the same
+            if(!nextNumber || nextNumber.className !== set[j].className) { //Number is the last in the set or next number is not the same                
                 if(set[j + 1].className !== 'empty') { //Next cell is not empty
                     continue;
                 }
                 setNumber(set[j + emptyCount], set[j].textContent); //Shift number to the last empty cell
-                clearCell(set[j]); 
+                clearCell(set[j]);                                 
             } else { 
-                setNumber(nextNumber, set[j].textContent * 2); //Join numbers
-                clearCell(set[j]);
-                nextNumber.style.transform = 'scale(1.1)';
-                checkWin(nextNumber);
-                emptyCount++;
+                if(!nextNumber.classList.contains('joined')) {  //numbers was joined on previous iteration
+                    setNumber(nextNumber, set[j].textContent * 2); //Join numbers
+                    nextNumber.classList.add('joined');
+                    clearCell(set[j]);
+                    nextNumber.style.transform = 'scale(1.1)';
+                    checkWin(nextNumber);
+                    emptyCount++;
+                } else {
+                    setNumber(set[j + emptyCount], set[j].textContent); //Shift number to the last empty cell
+                    clearCell(set[j]); 
+                }
             }         
         } else {
             emptyCount++;
@@ -174,7 +166,13 @@ function shiftNumber(set) { //Main logic
                 return set[i];
             }
         }
-    }   
+    }
+    
+    function clearJoined() {
+        for(let i = 0; i < set.length; i++) {
+            set[i].classList.remove('joined');
+        }
+    }
 }
 
 function shiftDown() {    
@@ -236,15 +234,19 @@ function checkGameOver() {
             }
         }
     }
-    gameOver.classList.toggle('visible'); 
+    message.className = 'message';
+    message.classList.add('game-over');
+    messageTitle.textContent = 'Game Over!';
+    keepGoingBtn.style.display = 'none';
+    message.classList.toggle('visible'); 
 }
 
 function checkWin(num) {
-    if(num.textContent === '8') {
-        if(youWin) {
-            youWin.classList.toggle('visible');
-            youWin = null;
-        }
+    if(num.textContent === '2048' && !message.classList.contains('you-win')) {
+        message.classList.add('you-win');
+        messageTitle.textContent = 'Ай маладэц!';
+        keepGoingBtn.style.display = 'block';
+        message.classList.toggle('visible');
     }
 }
 
@@ -256,11 +258,12 @@ table.addEventListener('transitionend', function(event) {
 
 tryAgainBtn.addEventListener('click', function() {
     tryAgainBtn.parentElement.classList.toggle('visible');
+    message.className = 'message';
     startNewGame(); 
 });
 
 keepGoingBtn.addEventListener('click', function() {
-    tryAgainBtn.parentElement.classList.toggle('visible');
+    keepGoingBtn.parentElement.classList.toggle('visible');
 });
 
 document.body.addEventListener('keydown', function(event) {  
@@ -284,7 +287,7 @@ document.body.addEventListener('keydown', function(event) {
         setTimeout(function() {
             newNumber();
             if(!document.querySelectorAll('.empty').length) {
-            checkGameOver();
+                checkGameOver();
             }
         }, 200);        
     }
