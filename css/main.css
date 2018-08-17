@@ -12,7 +12,7 @@ body {
 }
 
 .visible {
-    display: none !important;
+    display: flex !important;
 }
 
 .wrapper {

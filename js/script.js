@@ -76,16 +76,16 @@ function newNumber(){
     const emptyCells = document.querySelectorAll('.empty');
     if(emptyCells.length){
         const randCell = emptyCells[randomNumber(0, emptyCells.length-1)];
-        randCell.textContent = randomNumber(1,2)*2;
+        randCell.textContent = randomNumber(1,2) * 2;
         randCell.className = `num${randCell.textContent}`; 
         randCell.style.transform = 'scale(1.1)';
         return emptyCells;
-    } 
+    }
 }
 
 //Initialize table for new game
 function clearTable(){
-    for(var i = 0; i < tableSize; i++) {
+    for(let i = 0; i < tableSize; i++) {
         for(let j = 0; j < tableSize; j++) {
             table.rows[i].cells[j].className = 'empty';
             table.rows[i].cells[j].textContent = '';            
@@ -123,7 +123,7 @@ function setNumber(td, value) {
     }
 }
 
-function shiftNumber(set) {
+function shiftNumber(set) { //Main logic
     let emptyCount = 0;
     for(var j = set.length - 1; j >= 0; j--) {
         if(set[j].className !== 'empty') {
@@ -138,7 +138,7 @@ function shiftNumber(set) {
                 setNumber(set[j + emptyCount], set[j].textContent); //Shift number to the last empty cell
                 clearCell(set[j]); 
             } else { 
-                setNumber(nextNumber, set[j].textContent*2); //Join numbers
+                setNumber(nextNumber, set[j].textContent * 2); //Join numbers
                 clearCell(set[j]);
                 nextNumber.style.transform = 'scale(1.1)';
                 emptyCount++;
@@ -196,6 +196,29 @@ function tableChecksum(table) {
     return checksum;
 }
 
+function checkGameOver() {
+    let currentCell, leftCell, lowerCell;
+    for(let i = 0; i < tableSize; i++) {
+        for(let j = 0; j < tableSize; j++) {
+            currentCell = table.rows[i].cells[j].textContent;
+            if(j < tableSize - 1) {
+                leftCell = table.rows[i].cells[j + 1].textContent;
+            } else {
+                leftCell = '';
+            }
+            if(i < tableSize - 1) {
+                lowerCell = table.rows[i + 1].cells[j].textContent;
+            } else {
+                lowerCell = '';
+            }
+            if(currentCell === leftCell || currentCell === lowerCell) {
+                return;
+            }
+        }
+    }
+    gameOver.classList.toggle('visible'); 
+}
+
 table.addEventListener('transitionend', function(event) {
     if(event.target.tagName === 'TD') {
         event.target.style.transform = 'scale(1)';
@@ -225,6 +248,11 @@ document.body.addEventListener('keydown', function(event) {
     }
     const tableChanged = (chechsum !== tableChecksum(table));
     if(event.keyCode >= 37 && event.keyCode <= 40 && tableChanged) {
-        setTimeout(newNumber, 200);
+        setTimeout(function() {
+            newNumber();
+            if(!document.querySelectorAll('.empty').length) {
+            checkGameOver();
+            }
+        }, 200);        
     }
 });
