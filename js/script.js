@@ -1,61 +1,30 @@
-function randomNumber(min, max) {
-  return min + Math.floor(Math.random() * (max + 1 - min));
-}
-
 const tableSize = 4;
 
+//Containers
 const wrapper =  document.createElement('div');
-wrapper.classList.add('wrapper');
 const gameContainer =  document.createElement('div');
-gameContainer.classList.add('game-container');
 
-//Create table
+//Table
 const table = document.createElement('table');
 const tbody = document.createElement('tbody');
 const tr = document.createElement('tr');
 const td = document.createElement('td');
 
-for(let i = 0; i < tableSize; i++) {
-  let newTr = tr.cloneNode(true);
-  for(let j = 0; j < tableSize; j++) {
-    const newTd = td.cloneNode(false);
-    newTd.dataset.row = i + '';
-    newTd.dataset.col = j + '';
-    newTr.appendChild(newTd);
-  }
-  tbody.appendChild(newTr);
-}
-
-//Create heading elements
+//Heading elements
 const title = document.createElement('h1');
-title.textContent = '2048';
-
 const intro = document.createElement('div');
-intro.classList.add('intro');
-
 const description = document.createElement('div');
-description.classList.add('description');
-description.innerHTML = 'Join the numbers and get to the <b>2048 tile!</b>';
-
 const newGameBtn = document.createElement('div');
-newGameBtn.classList.add('button');
-newGameBtn.textContent = 'New Game';
-newGameBtn.addEventListener('click', startNewGame);
 
-//Create messages
+//Messages
 const message = document.createElement('div');
-message.classList.add('message');
-
 const messageTitle = document.createElement('h2');
-
 const tryAgainBtn = document.createElement('div');
-tryAgainBtn.classList.add('button');
-tryAgainBtn.textContent = 'Try Again';
-
 const keepGoingBtn = document.createElement('div');
-keepGoingBtn.classList.add('button');
-keepGoingBtn.textContent = 'Keep Going';
 
+createTable(); 
+
+//Append elements
 intro.appendChild(description);
 intro.appendChild(newGameBtn);
 table.appendChild(tbody);
@@ -69,25 +38,52 @@ wrapper.appendChild(intro);
 wrapper.appendChild(gameContainer);
 document.body.appendChild(wrapper);
 
-wrapper.style.width = getComputedStyle(table).width;
-message.style.width = getComputedStyle(table).width;
-message.style.height = getComputedStyle(table).height;
+setStyles();
 
 startNewGame();
 
-//Create number 2 or 4 in a random cell
-function newNumber(){  
-    const emptyCells = document.querySelectorAll('.empty');
-    if(emptyCells.length){
-        const randCell = emptyCells[randomNumber(0, emptyCells.length-1)];
-        randCell.textContent = randomNumber(1,2) * 2;
-        randCell.className = `num${randCell.textContent}`; 
-        randCell.style.transform = 'scale(1.1)';
-        return randCell;
-    } 
+function randomNumber(min, max) {
+  return min + Math.floor(Math.random() * (max + 1 - min));
+}
+
+function setStyles() {
+    wrapper.classList.add('wrapper');
+    wrapper.style.width = getComputedStyle(table).width;
+    gameContainer.classList.add('game-container');
+    title.textContent = '2048';
+    intro.classList.add('intro');
+    description.classList.add('description');
+    description.innerHTML = 'Join the numbers and get to the <b>2048 tile!</b>';
+    newGameBtn.classList.add('button');
+    newGameBtn.textContent = 'New Game';
+    message.classList.add('message');
+    message.style.width = getComputedStyle(table).width;
+    message.style.height = getComputedStyle(table).height;
+    tryAgainBtn.classList.add('button');
+    tryAgainBtn.textContent = 'Try Again';
+    keepGoingBtn.classList.add('button');
+    keepGoingBtn.textContent = 'Keep Going';  
+}
+
+function createTable() {
+    for(let i = 0; i < tableSize; i++) {
+        let newTr = tr.cloneNode(true);
+        for(let j = 0; j < tableSize; j++) {
+            const newTd = td.cloneNode(false);
+            newTd.dataset.row = i + '';
+            newTd.dataset.col = j + '';
+            newTr.appendChild(newTd);
+        }
+        tbody.appendChild(newTr);
+    }
 }
 
 //Initialize table for new game
+function startNewGame() {
+    clearTable();
+    setTimeout(initTable, 300);
+}
+
 function clearTable(){
     for(let i = 0; i < tableSize; i++) {
         for(let j = 0; j < tableSize; j++) {
@@ -108,9 +104,16 @@ function initTable() {
     } 
 }
 
-function startNewGame() {
-    clearTable();
-    setTimeout(initTable, 300);
+//Create number 2 or 4 in a random cell
+function newNumber(){  
+    const emptyCells = document.querySelectorAll('.empty');
+    if(emptyCells.length){
+        const randCell = emptyCells[randomNumber(0, emptyCells.length-1)];
+        randCell.textContent = randomNumber(1,2) * 2;
+        randCell.className = `num${randCell.textContent}`; 
+        randCell.style.transform = 'scale(1.1)';
+        return randCell;
+    } 
 }
 
 function clearCell(td) {
@@ -127,7 +130,8 @@ function setNumber(td, value) {
     }
 }
 
-function shiftNumber(set) { //Main logic
+//Main logic
+function shiftNumber(set) {
     let emptyCount = 0;   
     clearJoined();
     for(var j = set.length - 1; j >= 0; j--) {
@@ -143,7 +147,7 @@ function shiftNumber(set) { //Main logic
                 setNumber(set[j + emptyCount], set[j].textContent); //Shift number to the last empty cell
                 clearCell(set[j]);                                 
             } else { 
-                if(!nextNumber.classList.contains('joined')) {  //numbers was joined on previous iteration
+                if(!nextNumber.classList.contains('joined')) {  //Numbers was not joined on previous iteration
                     setNumber(nextNumber, set[j].textContent * 2); //Join numbers
                     nextNumber.classList.add('joined');
                     clearCell(set[j]);
@@ -205,15 +209,7 @@ function shiftRight() {
     } 
 }
 
-function tableChecksum(table) {
-    const tdList = table.querySelectorAll('td');
-    let checksum = 0;
-    for(let i = 0; i < tdList.length; i++) {
-        checksum += (i + 1) * tdList[i].textContent;
-    }
-    return checksum;
-}
-
+//Handling messages
 function checkGameOver() {
     let currentCell, leftCell, lowerCell;
     for(let i = 0; i < tableSize; i++) {
@@ -249,6 +245,20 @@ function checkWin(num) {
         message.classList.toggle('visible');
     }
 }
+
+//Changes control
+function tableChecksum(table) {
+    const tdList = table.querySelectorAll('td');
+    let checksum = 0;
+    for(let i = 0; i < tdList.length; i++) {
+        checksum += (i + 1) * tdList[i].textContent;
+    }
+    return checksum;
+}
+
+
+//Handling Events
+newGameBtn.addEventListener('click', startNewGame);
 
 table.addEventListener('transitionend', function(event) {
     if(event.target.tagName === 'TD') {
